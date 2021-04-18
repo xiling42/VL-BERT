@@ -38,7 +38,7 @@ class GQADataset(Dataset):
         print('--------------------------------------------------------------------------')
         print(self.img_info[imgfile].keys())
         img = torch.from_numpy(self.img[idx])
-        print(img)
+        # print(img)
         return img, question, len(question), answer
 
     def __len__(self):
