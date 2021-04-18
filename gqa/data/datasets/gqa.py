@@ -27,7 +27,7 @@ class GQADataset(Dataset):
     def __init__(self, root, split='train', transform=None):
         with open(f'{root}/data/gqa_{split}.pkl', 'rb') as f:
             self.data = pickle.load(f)
-        with open(f'data/gqa_dic.pkl', 'rb') as f:
+        with open(f'{root}/data/gqa_dic.pkl', 'rb') as f:
             dic = pickle.load(f)
 
         self.n_words = len(dic['word_dic']) + 1
