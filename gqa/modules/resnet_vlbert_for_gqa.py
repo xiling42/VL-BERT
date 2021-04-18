@@ -311,9 +311,9 @@ class ResNetVLBERT(Module):
         logits = F.softmax(logits, 1)
         print('logits: ', logits)
         # loss
-        criterion = nn.CrossEntropyLoss()
+        # criterion = nn.CrossEntropyLoss()
         print('logits: ', logits)
-        loss = F.cross_entropy(logits, answers.long().view(-1))
+        loss = F.cross_entropy(logits, answers)
         # loss = criterion(logits, answers)
         print('logits: ', logits)
         outputs.update({'label_logits': logits,
