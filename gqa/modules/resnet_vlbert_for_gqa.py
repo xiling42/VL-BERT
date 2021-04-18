@@ -307,7 +307,7 @@ class ResNetVLBERT(Module):
 
         ###########################################
         outputs = {}
-        print('hm: ', hm.shape)
+        print('hm: ', hm)
         # classifier
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
@@ -315,7 +315,7 @@ class ResNetVLBERT(Module):
 
         # loss
         criterion = nn.CrossEntropyLoss()
-        loss = criterion(logits.transpose(0, 1), answers)
+        loss = criterion(logits, answers)
 
         outputs.update({'label_logits': logits,
                         'label': answers,
