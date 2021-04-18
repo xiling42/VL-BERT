@@ -1,3 +1,3 @@
-from .vcr import VCRDataset
+from .gqa import GQADataset
 
 
