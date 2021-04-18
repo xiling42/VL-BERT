@@ -27,11 +27,12 @@ class GQADataset(Dataset):
     def __init__(self, root, split='train', transform=None):
         with open(f'{root}/data/gqa_{split}.pkl', 'rb') as f:
             self.data = pickle.load(f)
-        # with open(f'{root}/data/gqa_dic.pkl', 'rb') as f:
-        #     dic = pickle.load(f)
+        with open(f'{root}/data/gqa_dic.pkl', 'rb') as f:
+            dic = pickle.load(f)
         #
-        # self.n_words = len(dic['word_dic']) + 1
-        # self.n_answers = len(dic['answer_dic'])
+        self.n_words = len(dic['word_dic']) + 1
+        self.n_answers = len(dic['answer_dic'])
+        print('n words: {}, n_answers: {}'.format(self.n_words, self.n_answers))
         self.root = root
         self.split = split
         self.img, self.img_info = gqa_feature_loader(self.root)
