@@ -19,6 +19,7 @@ class ResNetVLBERT(Module):
 
         self.enable_cnn_reg_loss = config.NETWORK.ENABLE_CNN_REG_LOSS
         self.cnn_loss_top = config.NETWORK.CNN_LOSS_TOP
+        self.dim = config.NETWORK.IMAGE_FINAL_DIM
         if not config.NETWORK.BLIND:
             # self.image_feature_extractor = FastRCNN(config,
             #                                         average_pool=True,
@@ -240,6 +241,7 @@ class ResNetVLBERT(Module):
         # question = question.unsqueeze(1)
         # answers = answers.unsqueeze(1)
         image = self.image_feature_fc(image)
+        image = image.view(image.shape[0], self.dim, -1)
         print('question: ', question.shape)
         print('answer: ', answers)
         box_mask = (image[:, :, 0] > - 1.5)
