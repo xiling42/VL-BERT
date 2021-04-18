@@ -106,7 +106,7 @@ class ResNetVLBERT(Module):
                     if 'beta' in k_:
                         k_ = k_.replace('beta', 'bias')
                     mlm_transform_state_dict[k_] = v
-            print("loading pretrained classifier transform keys: {}.".format(pretrain_keys))
+            # print("loading pretrained classifier transform keys: {}.".format(pretrain_keys))
             self.final_mlp[0].load_state_dict(mlm_transform_state_dict)
 
     def train(self, mode=True):
@@ -140,8 +140,8 @@ class ResNetVLBERT(Module):
         return object_reps[row_id.view(-1), span_tags_fixed.view(-1)].view(*span_tags_fixed.shape, -1)
 
     def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
-        print('q size: {} a size: '.format(question.shape, answer.shape))
-        print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
+        # print('q size: {} a size: '.format(question.shape, answer.shape))
+        # print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
         batch_size, max_q_len = question.shape
         _, max_a_len = answer.shape
         max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
@@ -241,10 +241,10 @@ class ResNetVLBERT(Module):
         # question = question.unsqueeze(1)
         # answers = answers.unsqueeze(1)
         image = self.image_feature_fc(image)
-        print('dim: ', self.dim)
+        # print('dim: ', self.dim)
         # image = image.view(image.shape[0], self.dim, -1)
-        print('question: ', question.shape)
-        print('answer: ', answers)
+        # print('question: ', question.shape)
+        # print('answer: ', answers)
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
@@ -252,7 +252,7 @@ class ResNetVLBERT(Module):
 
 
         # visual feature extraction
-        print('in resent_vlbert_for_gqa forward')
+        # print('in resent_vlbert_for_gqa forward')
         question_ids = question
         question_tags = question.new_zeros(question_ids.shape)
         question_mask = (question > 0.5)
@@ -277,7 +277,7 @@ class ResNetVLBERT(Module):
                                                                                                        answer_mask)
 
         # obj_reps = image
-        print('image: ', image.shape)
+        # print('image: ', image.shape)
         #
         text_visual_embeddings = self._collect_obj_reps(text_tags, image)
 
@@ -303,26 +303,26 @@ class ResNetVLBERT(Module):
 
         ###########################################
         outputs = {}
-        print('hm: ', hm.shape)
+        # print('hm: ', hm.shape)
         # classifier
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
         logits = self.final_mlp(hm)
         logits = F.softmax(logits, 1)
-        print('logits: ', logits)
-        print('answers: ', answers)
+        # print('logits: ', logits)
+        # print('answers: ', answers)
         # loss
         # criterion = nn.CrossEntropyLoss()
-        print('logits: ', logits)
+        # print('logits: ', logits)
         loss = F.cross_entropy(logits, answers)
         # loss = criterion(logits, answers)
-        print('logits: ', logits)
+        # print('logits: ', logits)
         outputs.update({'label_logits': logits,
                         'label': answers,
                         'ans_loss': loss})
-        print(answers.shape)
+        # print(answers.shape)
 
-        print('loss: ', loss)
+        # print('loss: ', loss)
         return outputs, loss
         #
         # net.zero_grad()

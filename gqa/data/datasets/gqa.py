@@ -40,9 +40,9 @@ class GQADataset(Dataset):
     def __getitem__(self, index):
         imgfile, question, answer = self.data[index]
         idx = int(self.img_info[imgfile]['index'])
-        print('--------------------------------------------------------------------------')
-        print(self.img_info[imgfile].keys())
-        print('n words: {}, n_answers: {}'.format(self.n_words, self.n_answers))
+        # print('--------------------------------------------------------------------------')
+        # print(self.img_info[imgfile].keys())
+        # print('n words: {}, n_answers: {}'.format(self.n_words, self.n_answers))
         img = torch.from_numpy(self.img[idx])
         # print(img)
         return img, question, len(question), answer
