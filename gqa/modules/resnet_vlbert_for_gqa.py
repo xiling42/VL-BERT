@@ -307,7 +307,7 @@ class ResNetVLBERT(Module):
 
         ###########################################
         outputs = {}
-
+        print('hm: ', hm.shape)
         # classifier
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
