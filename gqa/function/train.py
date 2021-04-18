@@ -22,8 +22,9 @@ from common.callbacks.epoch_end_callbacks.validation_monitor import ValidationMo
 from common.callbacks.epoch_end_callbacks.checkpoint import Checkpoint
 from common.lr_scheduler import WarmupMultiStepLR
 from common.nlp.bert.optimization import AdamW, WarmupLinearSchedule
-from gqa.modules import *
+# from gqa.modules import *
 from gqa.function.val import do_validation
+from gqa.data.build import *
 
 try:
     from apex import amp
@@ -142,23 +143,23 @@ def train_net(args, config):
 
     else:
         #os.environ['CUDA_VISIBLE_DEVICES'] = config.GPUS
-        model = eval(config.MODULE)(config)
-        summary_parameters(model, logger)
-        shutil.copy(args.cfg, final_output_path)
-        shutil.copy(inspect.getfile(eval(config.MODULE)), final_output_path)
+        # model = eval(config.MODULE)(config)
+        # summary_parameters(model, logger)
+        # shutil.copy(args.cfg, final_output_path)
+        # shutil.copy(inspect.getfile(eval(config.MODULE)), final_output_path)
         num_gpus = len(config.GPUS.split(','))
-        assert num_gpus <= 1 or (not config.TRAIN.FP16), "Not support fp16 with torch.nn.DataParallel. " \
-                                                         "Please use amp.parallel.DistributedDataParallel instead."
-        total_gpus = num_gpus
-        rank = None
-        writer = SummaryWriter(log_dir=args.log_dir) if args.log_dir is not None else None
-
-        # model
-        if num_gpus > 1:
-            model = torch.nn.DataParallel(model, device_ids=[int(d) for d in config.GPUS.split(',')]).cuda()
-        else:
-            torch.cuda.set_device(int(config.GPUS))
-            model.cuda()
+        # assert num_gpus <= 1 or (not config.TRAIN.FP16), "Not support fp16 with torch.nn.DataParallel. " \
+        #                                                  "Please use amp.parallel.DistributedDataParallel instead."
+        # total_gpus = num_gpus
+        # rank = None
+        # writer = SummaryWriter(log_dir=args.log_dir) if args.log_dir is not None else None
+        #
+        # # model
+        # if num_gpus > 1:
+        #     model = torch.nn.DataParallel(model, device_ids=[int(d) for d in config.GPUS.split(',')]).cuda()
+        # else:
+        #     torch.cuda.set_device(int(config.GPUS))
+        #     model.cuda()
 
         # loader
         train_loader = make_dataloader(config, mode='train', distributed=False)

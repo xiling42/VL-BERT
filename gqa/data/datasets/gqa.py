@@ -9,28 +9,28 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 import h5py
 
-from transforms import Scale
+from .transforms import Scale
 
 img = None
 img_info = {}
-def gqa_feature_loader():
+def gqa_feature_loader(root):
     global img, img_info
     if img is not None:
         return img, img_info
 
-    h = h5py.File('data/gqa_features.hdf5', 'r')
+    h = h5py.File(root+'/data/gqa_features.hdf5', 'r')
     img = h['features']
-    img_info = json.load(open('data/gqa_objects_merged_info.json', 'r'))
+    img_info = json.load(open(root + '/data/gqa_objects_merged_info.json', 'r'))
     return img, img_info
 
 class GQADataset(Dataset):
     def __init__(self, root, split='train', transform=None):
-        with open(f'data/gqa_{split}.pkl', 'rb') as f:
+        with open(f'{root}/data/gqa_{split}.pkl', 'rb') as f:
             self.data = pickle.load(f)
 
         self.root = root
         self.split = split
-        self.img, self.img_info = gqa_feature_loader()
+        self.img, self.img_info = gqa_feature_loader(self.root)
 
     def __getitem__(self, index):
         imgfile, question, answer = self.data[index]

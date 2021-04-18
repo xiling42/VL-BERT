@@ -1,13 +1,17 @@
 import torch.utils.data
 
 from .datasets import *
+from .datasets.gqa import transform, collate_data
 from . import samplers
 from .transforms.build import build_transforms
 from .collate_batch import BatchCollator
 import pprint
 from torch.utils.data import DataLoader
 
+
 DATASET_CATALOGS = {'gqa': GQADataset}
+
+
 
 
 def build_dataset(dataset_name, *args, **kwargs):
@@ -45,7 +49,7 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
     shuffle = cfg.TRAIN.SHUFFLE
     num_workers = cfg.NUM_WORKERS_PER_GPU * num_gpu
 
-    dataset_object = GQADataset(cfg.DATASET.DATASET, transform=transform)
+    dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, transform=transform)
 
     train_set = DataLoader(
         dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
