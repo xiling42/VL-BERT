@@ -281,7 +281,7 @@ class ResNetVLBERT(Module):
                                         text_token_type_ids,
                                         text_visual_embeddings,
                                         text_mask,
-                                        image,
+                                        object_vl_embeddings,
                                         box_mask,
                                         output_all_encoded_layers=False)
 
