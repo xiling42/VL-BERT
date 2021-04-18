@@ -322,7 +322,7 @@ class ResNetVLBERT(Module):
                         'ans_loss': loss})
         print(answers.shape)
 
-        print('loss: ', loss.shape)
+        print('loss: ', loss)
         return outputs, loss
         #
         # net.zero_grad()
