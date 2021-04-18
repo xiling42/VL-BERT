@@ -320,7 +320,7 @@ class ResNetVLBERT(Module):
         outputs.update({'label_logits': logits,
                         'label': answers,
                         'ans_loss': loss})
-
+        print(answers.shape)
         print('logits: ', logits.shape)
         print('loss: ', loss.shape)
         return outputs, loss
