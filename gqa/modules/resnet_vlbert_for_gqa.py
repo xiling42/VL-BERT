@@ -239,6 +239,7 @@ class ResNetVLBERT(Module):
         ###########################################
 
         # visual feature extraction
+        print('in resent_vlbert_for_gqa forward')
         images = image
         objects = boxes[:, :, -1]
         segms = masks
