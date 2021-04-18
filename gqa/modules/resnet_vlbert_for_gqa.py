@@ -72,10 +72,13 @@ class ResNetVLBERT(Module):
                     torch.nn.Linear(config.NETWORK.CLASSIFIER_HIDDEN_SIZE, 1),
                 )
             elif config.NETWORK.CLASSIFIER_TYPE == "1fc":
-                self.final_mlp = torch.nn.Sequential(
-                    torch.nn.Dropout(config.NETWORK.CLASSIFIER_DROPOUT, inplace=False),
-                    torch.nn.Linear(dim, 1)
-                )
+                # self.final_mlp = torch.nn.Sequential(
+                #     torch.nn.Dropout(config.NETWORK.CLASSIFIER_DROPOUT, inplace=False),
+                #     torch.nn.Linear(dim, 1)
+                # )
+                self.final_mlp = nn.Sequential(nn.linear( dim , dim),
+                              nn.ELU(),
+                              nn.linear(dim, 4))
             else:
                 raise ValueError("Not support classifier type: {}!".format(config.NETWORK.CLASSIFIER_TYPE))
 
@@ -237,6 +240,8 @@ class ResNetVLBERT(Module):
                       question,
                       length_question,
                       answers,
+                      n_words,
+                      n_answers,
                       mask_position=None,
                       mask_type=None,
                       mask_label=None):

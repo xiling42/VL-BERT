@@ -27,7 +27,11 @@ class GQADataset(Dataset):
     def __init__(self, root, split='train', transform=None):
         with open(f'{root}/data/gqa_{split}.pkl', 'rb') as f:
             self.data = pickle.load(f)
+        with open(f'data/gqa_dic.pkl', 'rb') as f:
+            dic = pickle.load(f)
 
+        self.n_words = len(dic['word_dic']) + 1
+        self.n_answers = len(dic['answer_dic'])
         self.root = root
         self.split = split
         self.img, self.img_info = gqa_feature_loader(self.root)
@@ -39,7 +43,7 @@ class GQADataset(Dataset):
         print(self.img_info[imgfile].keys())
         img = torch.from_numpy(self.img[idx])
         # print(img)
-        return img, question, len(question), answer
+        return img, question, len(question), answer, self.n_words, self.n_answers
 
     def __len__(self):
         return len(self.data)
