@@ -242,7 +242,7 @@ class ResNetVLBERT(Module):
         # answers = answers.unsqueeze(1)
         image = self.image_feature_fc(image)
         print('dim: ', self.dim)
-        image = image.view(image.shape[0], self.dim, -1)
+        # image = image.view(image.shape[0], self.dim, -1)
         print('question: ', question.shape)
         print('answer: ', answers)
         box_mask = (image[:, :, 0] > - 1.5)
