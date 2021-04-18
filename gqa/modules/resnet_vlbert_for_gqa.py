@@ -321,8 +321,8 @@ class ResNetVLBERT(Module):
                         'label': answers,
                         'ans_loss': loss})
 
-        
 
+        print('loss: ', loss)
         return outputs, loss
         #
         # net.zero_grad()
