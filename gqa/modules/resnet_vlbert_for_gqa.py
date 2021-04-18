@@ -248,7 +248,7 @@ class ResNetVLBERT(Module):
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
-        # image = image[:, :max_len]
+        image = image[:, :max_len]
 
 
         # visual feature extraction
