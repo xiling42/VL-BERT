@@ -139,6 +139,8 @@ class ResNetVLBERT(Module):
         return object_reps[row_id.view(-1), span_tags_fixed.view(-1)].view(*span_tags_fixed.shape, -1)
 
     def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
+        print('q size: {} a size: '.format(question.shape, answer.shape))
+        print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
         batch_size, max_q_len = question.shape
         _, max_a_len = answer.shape
         max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
