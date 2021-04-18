@@ -233,6 +233,12 @@ class ResNetVLBERT(Module):
                       mask_label=None):
         ###########################################
 
+        box_mask = (image[:, :, 0] > - 1.5)
+        max_len = max(length_question)
+        box_mask = box_mask[:, :max_len]
+        image = image[:, :max_len]
+
+
         # visual feature extraction
         print('in resent_vlbert_for_gqa forward')
         question_ids = question
@@ -253,16 +259,48 @@ class ResNetVLBERT(Module):
                                                                                                        answer_tags,
                                                                                                        answer_mask)
 
-        # obj_reps = {'obj_reps': boxes.new_zeros((*boxes.shape[:-1], self.config.NETWORK.IMAGE_FINAL_DIM))}
+        obj_reps = image
         #
-        # text_visual_embeddings = self._collect_obj_reps(text_tags, obj_reps['obj_reps'])
-        # hidden_states, hc = self.vlbert(text_input_ids,
-        #                                 text_token_type_ids,
-        #                                 text_visual_embeddings,
-        #                                 text_mask,
-        #                                 object_vl_embeddings,
-        #                                 box_mask,
-        #                                 output_all_encoded_layers=False)
+        text_visual_embeddings = self._collect_obj_reps(text_tags, obj_reps['obj_reps'])
+
+
+        object_linguistic_embeddings = self.object_linguistic_embeddings(
+            image.new_zeros((image.shape[0], image.shape[1])).long()
+        )
+        object_vl_embeddings = torch.cat((obj_reps['obj_reps'], object_linguistic_embeddings), -1)
+
+        hidden_states, hc = self.vlbert(text_input_ids,
+                                        text_token_type_ids,
+                                        text_visual_embeddings,
+                                        text_mask,
+                                        image,
+                                        box_mask,
+                                        output_all_encoded_layers=False)
+
+        _batch_inds = torch.arange(question.shape[0], device=question.device)
+
+        hm = hidden_states[_batch_inds, ans_pos]
+        # hm = F.tanh(self.hm_out(hidden_states[_batch_inds, ans_pos]))
+        # hi = F.tanh(self.hi_out(hidden_states[_batch_inds, ans_pos + 2]))
+
+        ###########################################
+        outputs = {}
+
+        # classifier
+        # logits = self.final_mlp(hc * hm * hi)
+        # logits = self.final_mlp(hc)
+        logits = self.final_mlp(hm)
+
+        # loss
+        ans_loss = F.binary_cross_entropy_with_logits(logits, answers) * answers.size(1)
+
+        outputs.update({'label_logits': logits,
+                        'label': answers,
+                        'ans_loss': ans_loss})
+
+        loss = ans_loss.mean()
+
+        return outputs, loss
         #
         # net.zero_grad()
         # output = net(image, question, q_len)
@@ -425,7 +463,7 @@ class ResNetVLBERT(Module):
         #         loss = loss + cnn_reg_loss.mean() * self.config.NETWORK.CNN_LOSS_WEIGHT
         #         outputs['cnn_regularization_loss'] = cnn_reg_loss
         #
-        return outputs, loss
+        # return outputs, loss
 
     def inference_forward(self,
                           image,
