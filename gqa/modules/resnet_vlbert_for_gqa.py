@@ -312,8 +312,7 @@ class ResNetVLBERT(Module):
         # loss
         criterion = nn.CrossEntropyLoss()
         print('logits: ', logits)
-        answers = answers.unsqueeze(1)
-        print(answers)
+     
         loss = criterion(logits, answers)
         print('logits: ', logits)
         outputs.update({'label_logits': logits,
