@@ -241,6 +241,7 @@ class ResNetVLBERT(Module):
         # question = question.unsqueeze(1)
         # answers = answers.unsqueeze(1)
         image = self.image_feature_fc(image)
+        print('dim: ', self.dim)
         image = image.view(image.shape[0], self.dim, -1)
         print('question: ', question.shape)
         print('answer: ', answers)
