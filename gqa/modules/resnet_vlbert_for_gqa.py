@@ -314,7 +314,8 @@ class ResNetVLBERT(Module):
         logits = self.final_mlp(hm)
 
         # loss
-        ans_loss = F.binary_cross_entropy_with_logits(logits, answers) * answers.size(1)
+        criterion = nn.CrossEntropyLoss()
+        ans_loss = criterion(logits, answers)
 
         outputs.update({'label_logits': logits,
                         'label': answers,
