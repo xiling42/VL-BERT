@@ -240,8 +240,6 @@ class ResNetVLBERT(Module):
                       question,
                       length_question,
                       answers,
-                      n_words,
-                      n_answers,
                       mask_position=None,
                       mask_type=None,
                       mask_label=None):
