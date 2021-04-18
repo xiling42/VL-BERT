@@ -71,7 +71,6 @@ class ResNetVLBERT(Module):
                 #     torch.nn.Linear(dim, 1)
                 # )
                 self.final_mlp = nn.Sequential(
-                              nn.ELU(),
                               nn.Linear(dim, 4))
             else:
                 raise ValueError("Not support classifier type: {}!".format(config.NETWORK.CLASSIFIER_TYPE))
