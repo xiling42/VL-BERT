@@ -315,7 +315,7 @@ class ResNetVLBERT(Module):
 
         # loss
         criterion = nn.CrossEntropyLoss()
-        loss = criterion(logits, torch.transpose(answers, 0, 1))
+        loss = criterion(logits, answers)
 
         outputs.update({'label_logits': logits,
                         'label': answers,
