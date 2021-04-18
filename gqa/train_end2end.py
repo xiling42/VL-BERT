@@ -7,6 +7,8 @@ import subprocess
 from gqa.function.config import config, update_config
 from gqa.function.train import train_net
 from gqa.function.test import test_net
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def parse_args():
     parser = argparse.ArgumentParser('Train Cognition Network')
