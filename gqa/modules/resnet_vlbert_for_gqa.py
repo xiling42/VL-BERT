@@ -61,22 +61,16 @@ class ResNetVLBERT(Module):
         self.for_pretrain = config.NETWORK.FOR_MASK_VL_MODELING_PRETRAIN
         assert not self.for_pretrain, "Not implement pretrain mode now!"
 
+
         if not self.for_pretrain:
             dim = config.NETWORK.VLBERT.hidden_size
-            if config.NETWORK.CLASSIFIER_TYPE == "2fc":
-                self.final_mlp = torch.nn.Sequential(
-                    torch.nn.Dropout(config.NETWORK.CLASSIFIER_DROPOUT, inplace=False),
-                    torch.nn.Linear(dim, config.NETWORK.CLASSIFIER_HIDDEN_SIZE),
-                    torch.nn.ReLU(inplace=True),
-                    torch.nn.Dropout(config.NETWORK.CLASSIFIER_DROPOUT, inplace=False),
-                    torch.nn.Linear(config.NETWORK.CLASSIFIER_HIDDEN_SIZE, 1),
-                )
-            elif config.NETWORK.CLASSIFIER_TYPE == "1fc":
+
+            if config.NETWORK.CLASSIFIER_TYPE == "1fc":
                 # self.final_mlp = torch.nn.Sequential(
                 #     torch.nn.Dropout(config.NETWORK.CLASSIFIER_DROPOUT, inplace=False),
                 #     torch.nn.Linear(dim, 1)
                 # )
-                self.final_mlp = nn.Sequential(nn.Linear( dim , dim),
+                self.final_mlp = nn.Sequential(
                               nn.ELU(),
                               nn.Linear(dim, 4))
             else:
@@ -307,7 +301,7 @@ class ResNetVLBERT(Module):
 
         ###########################################
         outputs = {}
-        print('hm: ', hm)
+        print('hm: ', hm.shape)
         # classifier
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
