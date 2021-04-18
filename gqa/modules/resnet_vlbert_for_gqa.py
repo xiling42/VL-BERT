@@ -57,10 +57,8 @@ class ResNetVLBERT(Module):
         if language_pretrained_model_path is None:
             print("Warning: no pretrained language model found, training from scratch!!!")
 
-        self.vlbert = TimeDistributed(
-            VisualLinguisticBert(config.NETWORK.VLBERT,
-                                 language_pretrained_model_path=language_pretrained_model_path)
-        )
+        self.vlbert = VisualLinguisticBert(config.NETWORK.VLBERT,
+                                           language_pretrained_model_path=language_pretrained_model_path)
 
         self.for_pretrain = config.NETWORK.FOR_MASK_VL_MODELING_PRETRAIN
         assert not self.for_pretrain, "Not implement pretrain mode now!"
