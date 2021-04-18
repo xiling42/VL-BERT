@@ -87,18 +87,32 @@ class ResNetVLBERT(Module):
         self.fix_params()
 
     def init_weight(self):
-        if not self.config.NETWORK.BLIND:
-            self.image_feature_extractor.init_weight()
-            if self.object_linguistic_embeddings is not None:
-                self.object_linguistic_embeddings.weight.data.normal_(mean=0.0, std=0.02)
-            if self.enable_cnn_reg_loss and self.cnn_loss_top:
-                self.cnn_loss_reg.apply(self.vlbert._module.init_weights)
-
-        if not self.for_pretrain:
-            for m in self.final_mlp.modules():
-                if isinstance(m, torch.nn.Linear):
-                    torch.nn.init.xavier_uniform_(m.weight)
-                    torch.nn.init.constant_(m.bias, 0)
+        # self.hm_out.weight.data.normal_(mean=0.0, std=0.02)
+        # self.hm_out.bias.data.zero_()
+        # self.hi_out.weight.data.normal_(mean=0.0, std=0.02)
+        # self.hi_out.bias.data.zero_()
+        self.image_feature_extractor.init_weight()
+        if self.object_linguistic_embeddings is not None:
+            self.object_linguistic_embeddings.weight.data.normal_(mean=0.0, std=0.02)
+        for m in self.final_mlp.modules():
+            if isinstance(m, torch.nn.Linear):
+                torch.nn.init.xavier_uniform_(m.weight)
+                torch.nn.init.constant_(m.bias, 0)
+        if self.config.NETWORK.CLASSIFIER_TYPE == 'mlm':
+            language_pretrained = torch.load(self.language_pretrained_model_path)
+            mlm_transform_state_dict = {}
+            pretrain_keys = []
+            for k, v in language_pretrained.items():
+                if k.startswith('cls.predictions.transform.'):
+                    pretrain_keys.append(k)
+                    k_ = k[len('cls.predictions.transform.'):]
+                    if 'gamma' in k_:
+                        k_ = k_.replace('gamma', 'weight')
+                    if 'beta' in k_:
+                        k_ = k_.replace('beta', 'bias')
+                    mlm_transform_state_dict[k_] = v
+            print("loading pretrained classifier transform keys: {}.".format(pretrain_keys))
+            self.final_mlp[0].load_state_dict(mlm_transform_state_dict)
 
     def train(self, mode=True):
         super(ResNetVLBERT, self).train(mode)
