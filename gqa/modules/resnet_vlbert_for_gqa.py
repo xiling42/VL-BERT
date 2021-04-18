@@ -41,10 +41,7 @@ class ResNetVLBERT(Module):
                 )
         self.image_feature_bn_eval = config.NETWORK.IMAGE_FROZEN_BN
 
-        if 'roberta' in config.NETWORK.BERT_MODEL_NAME:
-            self.tokenizer = RobertaTokenizer.from_pretrained(config.NETWORK.BERT_MODEL_NAME)
-        else:
-            self.tokenizer = BertTokenizer.from_pretrained(config.NETWORK.BERT_MODEL_NAME)
+        self.tokenizer = BertTokenizer.from_pretrained(config.NETWORK.BERT_MODEL_NAME)
 
         language_pretrained_model_path = None
         if config.NETWORK.BERT_PRETRAINED != '':
@@ -248,7 +245,7 @@ class ResNetVLBERT(Module):
         # answers = answers.unsqueeze(1)
         image = self.image_feature_fc(image)
         print('question: ', question.shape)
-        print('answer: ', answers.shape)
+        print('answer: ', answers)
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
