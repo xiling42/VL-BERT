@@ -308,7 +308,7 @@ class ResNetVLBERT(Module):
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
         logits = self.final_mlp(hm)
-
+        print('logits: ', logits)
         # loss
         criterion = nn.CrossEntropyLoss()
         loss = criterion(logits, answers)
@@ -317,7 +317,7 @@ class ResNetVLBERT(Module):
                         'label': answers,
                         'ans_loss': loss})
         print(answers.shape)
-        print('logits: ', logits.shape)
+
         print('loss: ', loss.shape)
         return outputs, loss
         #
