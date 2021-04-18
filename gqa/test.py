@@ -3,8 +3,8 @@ import os
 import argparse
 from copy import deepcopy
 
-from vcr.function.config import config, update_config
-from vcr.function.test import test_net, merge_result
+from gqa.function.config import config, update_config
+from gqa.function.test import test_net, merge_result
 
 
 def parse_args():

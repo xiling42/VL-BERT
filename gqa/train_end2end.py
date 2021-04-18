@@ -4,9 +4,9 @@ import argparse
 import torch
 import subprocess
 
-from vcr.function.config import config, update_config
-from vcr.function.train import train_net
-from vcr.function.test import test_net
+from gqa.function.config import config, update_config
+from gqa.function.train import train_net
+from gqa.function.test import test_net
 
 def parse_args():
     parser = argparse.ArgumentParser('Train Cognition Network')

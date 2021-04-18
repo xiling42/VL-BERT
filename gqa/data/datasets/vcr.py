@@ -120,7 +120,7 @@ class VCRDataset(Dataset):
     def load_annotations(self, ann_file):
         tic = time.time()
         database = []
-        db_cache_name = 'vcr_nometa_{}_{}_{}'.format(self.task, self.image_set, os.path.basename(ann_file)[:-len('.jsonl')])
+        db_cache_name = 'gqa_nometa_{}_{}_{}'.format(self.task, self.image_set, os.path.basename(ann_file)[:-len('.jsonl')])
         if self.only_use_relevant_dets:
             db_cache_name = db_cache_name + '_only_relevant_dets'
         if self.zip_mode:

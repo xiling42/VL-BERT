@@ -11,8 +11,7 @@ import torch.nn.functional as F
 from common.utils.load import smart_load_model_state_dict
 from common.trainer import to_cuda
 from common.utils.create_logger import create_logger
-from vcr.data.build import make_dataloader
-from vcr.modules import *
+from gqa.modules import *
 
 try:
     from apex import amp

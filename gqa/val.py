@@ -12,10 +12,10 @@ from common.utils.load import smart_load_model_state_dict
 from common.trainer import to_cuda
 from common.metrics.composite_eval_metric import CompositeEvalMetric
 from common.metrics.vcr_metrics import JointAccuracy
-from vcr.data.build import make_dataloader
-from vcr.function.config import config, update_config
-from vcr.modules import *
-from vcr.function.val import joint_validation
+from gqa.data.build import make_dataloader
+from gqa.function.config import config, update_config
+from gqa.modules import *
+from gqa.function.val import joint_validation
 
 try:
     from apex import amp
@@ -33,10 +33,10 @@ def parse_args():
     parser.add_argument('--a-bs', type=int)
     parser.add_argument('--r-bs', type=int)
     parser.add_argument('--gpus', type=int, nargs='+', default=[0])
-    parser.add_argument('--result-path', type=str, default='./vcr_val_results')
+    parser.add_argument('--result-path', type=str, default='./gqa_val_results')
     parser.add_argument('--result-name', type=str, default='vl-bert')
     parser.add_argument('--use-cache', default=False, action='store_true')
-    parser.add_argument('--annot', type=str, default='./data/vcr/val.jsonl')
+    parser.add_argument('--annot', type=str, default='./data/gqa/val.jsonl')
     parser.add_argument('--cudnn-off', default=False, action='store_true')
     parser.add_argument('--fp16', default=False, action='store_true')
 
