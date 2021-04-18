@@ -231,6 +231,8 @@ class ResNetVLBERT(Module):
                       mask_type=None,
                       mask_label=None):
         ###########################################
+        question.unsqueeze(1)
+        answers.unsqueeze(1)
         print('question: ', question.shape)
         print('answer: ', answers.shape)
         box_mask = (image[:, :, 0] > - 1.5)
