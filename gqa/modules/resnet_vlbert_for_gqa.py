@@ -20,10 +20,11 @@ class ResNetVLBERT(Module):
         self.enable_cnn_reg_loss = config.NETWORK.ENABLE_CNN_REG_LOSS
         self.cnn_loss_top = config.NETWORK.CNN_LOSS_TOP
         if not config.NETWORK.BLIND:
-            self.image_feature_extractor = FastRCNN(config,
-                                                    average_pool=True,
-                                                    final_dim=config.NETWORK.IMAGE_FINAL_DIM,
-                                                    enable_cnn_reg_loss=(self.enable_cnn_reg_loss and not self.cnn_loss_top))
+            # self.image_feature_extractor = FastRCNN(config,
+            #                                         average_pool=True,
+            #                                         final_dim=config.NETWORK.IMAGE_FINAL_DIM,
+            #                                         enable_cnn_reg_loss=(self.enable_cnn_reg_loss and not self.cnn_loss_top))
+            self.image_feature_fc = nn.Linear(2048, config.NETWORK.IMAGE_FINAL_DIM)
             if config.NETWORK.VLBERT.object_word_embed_mode == 1:
                 self.object_linguistic_embeddings = nn.Embedding(81, config.NETWORK.VLBERT.hidden_size)
             elif config.NETWORK.VLBERT.object_word_embed_mode == 2:
@@ -245,6 +246,7 @@ class ResNetVLBERT(Module):
         ###########################################
         # question = question.unsqueeze(1)
         # answers = answers.unsqueeze(1)
+        image = self.image_feature_fc(image)
         print('question: ', question.shape)
         print('answer: ', answers.shape)
         box_mask = (image[:, :, 0] > - 1.5)
@@ -279,7 +281,7 @@ class ResNetVLBERT(Module):
                                                                                                        answer_mask)
 
         # obj_reps = image
-        print('image: ', image)
+        print('image: ', image.shape())
         #
         text_visual_embeddings = self._collect_obj_reps(text_tags, image)
 
