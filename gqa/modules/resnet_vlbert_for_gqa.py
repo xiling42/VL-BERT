@@ -321,7 +321,7 @@ class ResNetVLBERT(Module):
                         'label': answers,
                         'ans_loss': loss})
 
-        print('logits: ', logits)
+        print('logits: ', logits.shape)
         print('loss: ', loss)
         return outputs, loss
         #
