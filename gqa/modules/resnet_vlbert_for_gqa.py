@@ -134,6 +134,7 @@ class ResNetVLBERT(Module):
 
     def prepare_text_from_qa(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
         batch_size, max_q_len = question.shape
+        print(answers.shape)
         _, num_choices, max_a_len = answers.shape
         max_len = (question_mask.sum(1) + answers_mask.sum(2).max(1)[0]).max() + 3
         cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
@@ -232,8 +233,8 @@ class ResNetVLBERT(Module):
                       mask_type=None,
                       mask_label=None):
         ###########################################
-        print('question: ', question)
-        print('answer: ', answers)
+        print('question: ', question.shape)
+        print('answer: ', answers.shape)
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
