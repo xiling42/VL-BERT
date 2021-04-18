@@ -133,6 +133,8 @@ class ResNetVLBERT(Module):
         return object_reps[row_id.view(-1), span_tags_fixed.view(-1)].view(*span_tags_fixed.shape, -1)
 
     def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
+        print('q size: {} a size: '.format(question.shape, answer.shape))
+        print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
         batch_size, max_q_len = question.shape
         _, max_a_len = answer.shape
         max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
@@ -262,15 +264,16 @@ class ResNetVLBERT(Module):
                                                                                                        answer_tags,
                                                                                                        answer_mask)
 
-        obj_reps = image
+        # obj_reps = image
+        print('image: ', image)
         #
-        text_visual_embeddings = self._collect_obj_reps(text_tags, obj_reps['obj_reps'])
+        text_visual_embeddings = self._collect_obj_reps(text_tags, image)
 
 
         object_linguistic_embeddings = self.object_linguistic_embeddings(
             image.new_zeros((image.shape[0], image.shape[1])).long()
         )
-        object_vl_embeddings = torch.cat((obj_reps['obj_reps'], object_linguistic_embeddings), -1)
+        object_vl_embeddings = torch.cat((image, object_linguistic_embeddings), -1)
 
         hidden_states, hc = self.vlbert(text_input_ids,
                                         text_token_type_ids,
