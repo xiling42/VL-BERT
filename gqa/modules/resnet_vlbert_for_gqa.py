@@ -281,7 +281,7 @@ class ResNetVLBERT(Module):
                                                                                                        answer_mask)
 
         # obj_reps = image
-        print('image: ', image.shape())
+        print('image: ', image.shape)
         #
         text_visual_embeddings = self._collect_obj_reps(text_tags, image)
 
