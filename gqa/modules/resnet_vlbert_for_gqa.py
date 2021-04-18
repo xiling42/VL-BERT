@@ -132,37 +132,33 @@ class ResNetVLBERT(Module):
         row_id += row_id_broadcaster
         return object_reps[row_id.view(-1), span_tags_fixed.view(-1)].view(*span_tags_fixed.shape, -1)
 
-    def prepare_text_from_qa(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
+    def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
         batch_size, max_q_len = question.shape
-        print(answers.shape)
-        _, num_choices, max_a_len = answers.shape
-        max_len = (question_mask.sum(1) + answers_mask.sum(2).max(1)[0]).max() + 3
+        # _, max_a_len = answer.shape
+        max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
         cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
-        question = question.repeat(1, num_choices).view(-1, num_choices, max_q_len)
-        question_mask = question_mask.repeat(1, num_choices).view(-1, num_choices, max_q_len)
-        q_end = 1 + question_mask.sum(2, keepdim=True)
-        a_end = q_end + 1 + answers_mask.sum(2, keepdim=True)
-        input_ids = torch.zeros((batch_size, num_choices, max_len), dtype=question.dtype, device=question.device)
-        input_mask = torch.ones((batch_size, num_choices, max_len), dtype=torch.uint8, device=question.device)
-        input_type_ids = torch.zeros((batch_size, num_choices, max_len), dtype=question.dtype, device=question.device)
-        text_tags = input_type_ids.new_zeros((batch_size, num_choices, max_len))
-        grid_i, grid_j, grid_k = torch.meshgrid(torch.arange(batch_size, device=question.device),
-                                                torch.arange(num_choices, device=question.device),
-                                                torch.arange(max_len, device=question.device))
+        q_end = 1 + question_mask.sum(1, keepdim=True)
+        a_end = q_end + 1 + answer_mask.sum(1, keepdim=True)
+        input_ids = torch.zeros((batch_size, max_len), dtype=question.dtype, device=question.device)
+        input_mask = torch.ones((batch_size, max_len), dtype=torch.uint8, device=question.device)
+        input_type_ids = torch.zeros((batch_size, max_len), dtype=question.dtype, device=question.device)
+        text_tags = input_type_ids.new_zeros((batch_size, max_len))
+        grid_i, grid_j = torch.meshgrid(torch.arange(batch_size, device=question.device),
+                                        torch.arange(max_len, device=question.device))
 
-        input_mask[grid_k > a_end] = 0
-        input_type_ids[(grid_k > q_end) & (grid_k <= a_end)] = 1
-        q_input_mask = (grid_k > 0) & (grid_k < q_end)
-        a_input_mask = (grid_k > q_end) & (grid_k < a_end)
-        input_ids[:, :, 0] = cls_id
-        input_ids[grid_k == q_end] = sep_id
-        input_ids[grid_k == a_end] = sep_id
+        input_mask[grid_j > a_end] = 0
+        input_type_ids[(grid_j > q_end) & (grid_j <= a_end)] = 1
+        q_input_mask = (grid_j > 0) & (grid_j < q_end)
+        a_input_mask = (grid_j > q_end) & (grid_j < a_end)
+        input_ids[:, 0] = cls_id
+        input_ids[grid_j == q_end] = sep_id
+        input_ids[grid_j == a_end] = sep_id
         input_ids[q_input_mask] = question[question_mask]
-        input_ids[a_input_mask] = answers[answers_mask]
+        input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
-        text_tags[a_input_mask] = answers_tags[answers_mask]
+        text_tags[a_input_mask] = answer_tags[answer_mask]
 
-        return input_ids, input_type_ids, text_tags, input_mask
+        return input_ids, input_type_ids, text_tags, input_mask, (a_end - 1).squeeze(1)
 
     def prepare_text_from_qa_onesent(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
         batch_size, max_q_len = question.shape
