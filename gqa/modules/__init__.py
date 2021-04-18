@@ -1,4 +1,4 @@
-from .resnet_vlbert_for_vcr import ResNetVLBERT
+from .resnet_vlbert_for_gqa import ResNetVLBERT
 
 
 
