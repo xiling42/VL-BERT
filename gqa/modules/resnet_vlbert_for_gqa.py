@@ -308,6 +308,7 @@ class ResNetVLBERT(Module):
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
         logits = self.final_mlp(hm)
+        logits = F.softmax(logits, 1)
         print('logits: ', logits)
         # loss
         criterion = nn.CrossEntropyLoss()
