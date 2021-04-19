@@ -277,7 +277,7 @@ class ResNetVLBERT(Module):
                                                                                                        answer_ids,
                                                                                                        answer_tags,
                                                                                                        answer_mask)
-        print(text_mask.dtype, box_mask.dtype)
+        # print(text_mask.dtype, box_mask.dtype)
         # obj_reps = image
         # print('image: ', image.shape)
         #
