@@ -1,5 +1,6 @@
 #!/usr/bin/env python -W ignore::DeprecationWarning
 import os
+import warnings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,7 +12,7 @@ from common.visual_linguistic_bert import VisualLinguisticBert, VisualLinguistic
 from common.nlp.roberta import RobertaTokenizer
 
 BERT_WEIGHTS_NAME = 'pytorch_model.bin'
-
+warnings.filterwarnings('ignore')
 
 class ResNetVLBERT(Module):
     def __init__(self, config):
@@ -249,14 +250,14 @@ class ResNetVLBERT(Module):
         # print('answer: ', answers)
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
-        box_mask = box_mask[:, :max_len].type(torch.BoolTensor)
+        box_mask = box_mask[:, :max_len]
         image = image[:, :max_len]
 
         # visual feature extraction
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
         question_tags = question.new_zeros(question_ids.shape)
-        question_mask = (question > 0.5).type(torch.BoolTensor)
+        question_mask = (question > 0.5)
 
         # answer_ids = answers
         # answer_mask = answers.new_zeros(answer_ids.shape)
@@ -264,7 +265,7 @@ class ResNetVLBERT(Module):
 
         answer_ids = question_ids.new_zeros((question_ids.shape[0], 1)).fill_(
             self.tokenizer.convert_tokens_to_ids(['[MASK]'])[0])
-        answer_mask = question_mask.new_zeros(answer_ids.shape).fill_(1).type(torch.BoolTensor)
+        answer_mask = question_mask.new_zeros(answer_ids.shape).fill_(1)
         answer_tags = question_tags.new_zeros(answer_ids.shape)
 
         ############################################
@@ -291,9 +292,9 @@ class ResNetVLBERT(Module):
         hidden_states, hc = self.vlbert(text_input_ids,
                                         text_token_type_ids,
                                         text_visual_embeddings,
-                                        text_mask.type(torch.BoolTensor),
+                                        text_mask,
                                         object_vl_embeddings,
-                                        box_mask.type(torch.BoolTensor),
+                                        box_mask,
                                         output_all_encoded_layers=False)
 
         _batch_inds = torch.arange(question.shape[0], device=question.device)
@@ -324,6 +325,7 @@ class ResNetVLBERT(Module):
         # print(answers.shape)
 
         # print('loss: ', loss)
+
         return outputs, loss
         #
         # net.zero_grad()
