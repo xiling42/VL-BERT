@@ -11,7 +11,7 @@ import numpy as np
 from common.utils.load import smart_load_model_state_dict
 from common.trainer import to_cuda
 from common.metrics.composite_eval_metric import CompositeEvalMetric
-from common.metrics.vcr_metrics import JointAccuracy
+from common.metrics.gqa_metrics import JointAccuracy
 from gqa.data.build import make_dataloader
 from gqa.function.config import config, update_config
 from gqa.modules import *

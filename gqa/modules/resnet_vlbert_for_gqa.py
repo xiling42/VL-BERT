@@ -248,6 +248,7 @@ class ResNetVLBERT(Module):
         # image = image.view(image.shape[0], self.dim, -1)
         # print('question: ', question.shape)
         # print('answer: ', answers)
+        print('box_mask: ', image)
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
@@ -257,6 +258,7 @@ class ResNetVLBERT(Module):
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
         question_tags = question.new_zeros(question_ids.shape)
+        print('qs: ', question)
         question_mask = (question > 0.5)
 
         # answer_ids = answers
