@@ -169,7 +169,7 @@ class ResNetVLBERT(Module):
         input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
         text_tags[a_input_mask] = answer_tags[answer_mask]
-        return input_ids, input_type_ids, text_tags, input_mask, (a_end - 1).squeeze(1)
+        return input_ids, input_type_ids, text_tags, input_mask.bool(), (a_end - 1).squeeze(1)
 
     def prepare_text_from_qa_onesent(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
         batch_size, max_q_len = question.shape
