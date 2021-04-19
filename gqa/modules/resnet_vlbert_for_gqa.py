@@ -143,6 +143,7 @@ class ResNetVLBERT(Module):
     def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
         # print('q size: {} a size: '.format(question.shape, answer.shape))
         # print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
+        print('before')
         batch_size, max_q_len = question.shape
         _, max_a_len = answer.shape
         max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
@@ -167,7 +168,7 @@ class ResNetVLBERT(Module):
         input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
         text_tags[a_input_mask] = answer_tags[answer_mask]
-
+        print('after')
         return input_ids, input_type_ids, text_tags, input_mask, (a_end - 1).squeeze(1)
 
     def prepare_text_from_qa_onesent(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
@@ -264,7 +265,7 @@ class ResNetVLBERT(Module):
 
         answer_ids = question_ids.new_zeros((question_ids.shape[0], 1)).fill_(
             self.tokenizer.convert_tokens_to_ids(['[MASK]'])[0])
-        answer_mask = question_mask.new_zeros(answer_ids.shape).fill_(1.0)
+        answer_mask = question_mask.new_zeros(answer_ids.shape).fill_(1)
         answer_tags = question_tags.new_zeros(answer_ids.shape)
 
         ############################################
