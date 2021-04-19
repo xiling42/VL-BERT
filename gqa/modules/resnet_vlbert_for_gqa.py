@@ -263,8 +263,8 @@ class ResNetVLBERT(Module):
         question_mask = (question > 0.5)
 
         answer_ids = answers
-        answer_mask = answers.new_ones(answer_ids.shape)
-        answer_tags = (answers > 0.5)
+        answer_tags = answers.new_ones(answer_ids.shape)
+        answer_mask = (answers > 0.5)
 
         # answer_ids = question_ids.new_zeros((question_ids.shape[0], 1)).fill_(
         #     self.tokenizer.convert_tokens_to_ids(['[MASK]'])[0])
