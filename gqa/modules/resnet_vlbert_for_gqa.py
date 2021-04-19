@@ -150,7 +150,7 @@ class ResNetVLBERT(Module):
         max_len = (question_mask.sum(1) + 1).max() + 3
         cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
         q_end = 1 + question_mask.sum(1, keepdim=True)
-        a_end = q_end + 1 + answer_mask.sum(1, keepdim=True)
+        a_end = q_end + 1 + 1
         input_ids = torch.zeros((batch_size, max_len), dtype=question.dtype, device=question.device)
         input_mask = torch.ones((batch_size, max_len), dtype=torch.uint8, device=question.device)
         input_type_ids = torch.zeros((batch_size, max_len), dtype=question.dtype, device=question.device)
