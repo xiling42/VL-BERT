@@ -248,7 +248,7 @@ class ResNetVLBERT(Module):
         # image = image.view(image.shape[0], self.dim, -1)
         # print('question: ', question.shape)
         # print('answer: ', answers)
-        print('box_mask: ', image)
+        print('box_mask: ', image.shape, image[:, :, 0])
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
