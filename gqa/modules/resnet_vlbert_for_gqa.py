@@ -168,7 +168,7 @@ class ResNetVLBERT(Module):
         input_ids[q_input_mask] = question[question_mask]
         input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
-        print('adtype: ', answer_mask.dtype, a_input_mask.dtype, text_tags.dtype, answer_tags.dtype)
+        # print('adtype: ', answer_mask.dtype, a_input_mask.dtype, text_tags.dtype, answer_tags.dtype)
         text_tags[a_input_mask] = answer_tags[answer_mask]
         return input_ids, input_type_ids, text_tags, input_mask.bool(), (a_end - 1).squeeze(1)
 
@@ -202,7 +202,7 @@ class ResNetVLBERT(Module):
         return input_ids, input_type_ids, text_tags, input_mask
 
     def prepare_text_from_aq(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
-        print('--')
+        # print('--')
         batch_size, max_q_len = question.shape
         _, num_choices, max_a_len = answers.shape
         max_len = (question_mask.sum(1) + answers_mask.sum(2).max(1)[0]).max() + 3
@@ -249,7 +249,7 @@ class ResNetVLBERT(Module):
         # image = image.view(image.shape[0], self.dim, -1)
         # print('question: ', question.shape)
         # print('answer: ', answers)
-        print('box_mask: ', image.shape, image[:, :, 0])
+        # print('box_mask: ', image.shape, image[:, :, 0])
         box_mask = (image[:, :, 0] > - 1.5)
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
@@ -259,7 +259,7 @@ class ResNetVLBERT(Module):
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
         question_tags = question.new_zeros(question_ids.shape)
-        print('qs: ', question)
+        # print('qs: ', question)
         question_mask = (question > 0.5)
 
         # answer_ids = answers
