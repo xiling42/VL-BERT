@@ -200,6 +200,7 @@ class ResNetVLBERT(Module):
         return input_ids, input_type_ids, text_tags, input_mask
 
     def prepare_text_from_aq(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
+        print('--')
         batch_size, max_q_len = question.shape
         _, num_choices, max_a_len = answers.shape
         max_len = (question_mask.sum(1) + answers_mask.sum(2).max(1)[0]).max() + 3
@@ -324,7 +325,7 @@ class ResNetVLBERT(Module):
         # print(answers.shape)
 
         # print('loss: ', loss)
-
+        print('.')
         return outputs, loss
         #
         # net.zero_grad()
