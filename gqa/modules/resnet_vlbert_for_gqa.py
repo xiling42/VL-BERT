@@ -226,7 +226,7 @@ class ResNetVLBERT(Module):
         input_ids[grid_k == a_end] = sep_id
         input_ids[grid_k == q_end] = sep_id
         input_ids[q_input_mask] = question[question_mask]
-        print(answers_mask.dtype)
+        print('adtype: ',answers_mask.dtype)
         input_ids[a_input_mask] = answers[answers_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
         text_tags[a_input_mask] = answers_tags[answers_mask]
