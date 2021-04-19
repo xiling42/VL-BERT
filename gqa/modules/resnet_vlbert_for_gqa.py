@@ -143,7 +143,7 @@ class ResNetVLBERT(Module):
     def prepare_text_from_qa(self, question, question_tags, question_mask, answer, answer_tags, answer_mask):
         # print('q size: {} a size: '.format(question.shape, answer.shape))
         # print('q m size: {} a m size: '.format(question_mask.shape, answer_mask.shape))
-        print('before')
+
         batch_size, max_q_len = question.shape
         _, max_a_len = answer.shape
         max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
@@ -168,7 +168,6 @@ class ResNetVLBERT(Module):
         input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
         text_tags[a_input_mask] = answer_tags[answer_mask]
-        print('after')
         return input_ids, input_type_ids, text_tags, input_mask, (a_end - 1).squeeze(1)
 
     def prepare_text_from_qa_onesent(self, question, question_tags, question_mask, answers, answers_tags, answers_mask):
@@ -252,7 +251,7 @@ class ResNetVLBERT(Module):
         box_mask = box_mask[:, :max_len]
         image = image[:, :max_len]
 
-
+        print('befpre')
         # visual feature extraction
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
@@ -325,6 +324,7 @@ class ResNetVLBERT(Module):
         # print(answers.shape)
 
         # print('loss: ', loss)
+        print('..')
         return outputs, loss
         #
         # net.zero_grad()
