@@ -310,7 +310,7 @@ class ResNetVLBERT(Module):
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
         logits = self.final_mlp(hm)
-        logits = F.softmax(logits, 1)
+        # logits = F.softmax(logits, 1)
         # print('logits: ', logits)
         # print('answers: ', answers)
         # loss
