@@ -241,6 +241,7 @@ class ResNetVLBERT(Module):
         ###########################################
         # question = question.unsqueeze(1)
         # answers = answers.unsqueeze(1)
+        print('befpre')
         image = self.image_feature_fc(image)
         # print('dim: ', self.dim)
         # image = image.view(image.shape[0], self.dim, -1)
@@ -250,8 +251,8 @@ class ResNetVLBERT(Module):
         max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
         image = image[:, :max_len]
+        print('..')
 
-        print('befpre')
         # visual feature extraction
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
@@ -324,7 +325,7 @@ class ResNetVLBERT(Module):
         # print(answers.shape)
 
         # print('loss: ', loss)
-        print('..')
+
         return outputs, loss
         #
         # net.zero_grad()
