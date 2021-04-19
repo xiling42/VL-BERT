@@ -1,3 +1,4 @@
+#!/usr/bin/env python -W ignore::DeprecationWarning
 import _init_paths
 import os
 import argparse
@@ -7,7 +8,7 @@ import subprocess
 from gqa.function.config import config, update_config
 from gqa.function.train import train_net
 from gqa.function.test import test_net
-import warnings
+
 
 
 def parse_args():
@@ -58,7 +59,6 @@ def main():
 
 
 if __name__ == '__main__':
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
     main()
 
 

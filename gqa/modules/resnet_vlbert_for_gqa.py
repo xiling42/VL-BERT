@@ -1,3 +1,4 @@
+#!/usr/bin/env python -W ignore::DeprecationWarning
 import os
 import torch
 import torch.nn as nn
