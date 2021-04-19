@@ -168,7 +168,7 @@ class ResNetVLBERT(Module):
         input_ids[q_input_mask] = question[question_mask]
         input_ids[a_input_mask] = answer[answer_mask]
         text_tags[q_input_mask] = question_tags[question_mask]
-        print('adtype: ', answer_mask.dtype, a_input_mask.dtype)
+        print('adtype: ', answer_mask.dtype, a_input_mask.dtype, text_tags.dtype, answer_tags.dtype)
         text_tags[a_input_mask] = answer_tags[answer_mask]
         return input_ids, input_type_ids, text_tags, input_mask.bool(), (a_end - 1).squeeze(1)
 
