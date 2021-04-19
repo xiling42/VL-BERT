@@ -147,7 +147,7 @@ class ResNetVLBERT(Module):
 
         batch_size, max_q_len = question.shape
         # _, max_a_len = answer.shape
-        max_len = (question_mask.sum(1) + answer_mask.sum(1)).max() + 3
+        max_len = (question_mask.sum(1) + 1).max() + 3
         cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
         q_end = 1 + question_mask.sum(1, keepdim=True)
         a_end = q_end + 1 + answer_mask.sum(1, keepdim=True)
@@ -262,7 +262,7 @@ class ResNetVLBERT(Module):
         question_mask = (question > 0.5)
 
         answer_ids = answers
-        answer_mask = answers.new_zeros(answer_ids.shape)
+        answer_mask = answers.new_ones(answer_ids.shape)
         answer_tags = (answers > 0.5)
 
         # answer_ids = question_ids.new_zeros((question_ids.shape[0], 1)).fill_(
