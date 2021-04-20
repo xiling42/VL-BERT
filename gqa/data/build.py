@@ -59,6 +59,7 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
         # dataset = iter(train_set)
         return train_set
     if mode == 'val':
+        print('in ---------------------------------')
         dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, split = 'val', transform=transform)
     
         val_set = DataLoader(

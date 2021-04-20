@@ -10,6 +10,7 @@ def do_validation(net, val_loader, metrics, label_index_in_batch):
     for nbatch, batch in enumerate(val_loader):
         batch = to_cuda(batch)
         print(len(batch))
+        print(batch[0])
         #label = batch[label_index_in_batch]
         outputs = net(*batch)
         #datas = [batch[i] for i in range(len(batch)) if i != label_index_in_batch % len(batch)]
