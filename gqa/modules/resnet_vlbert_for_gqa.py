@@ -382,22 +382,33 @@ class ResNetVLBERT(Module):
         )
         object_vl_embeddings = torch.cat((image, object_linguistic_embeddings), -1)
 
-        hidden_states_text, hidden_states_objects, pooled_rep = self.vlbert(text_input_ids,
-                                                                            text_token_type_ids,
-                                                                            text_visual_embeddings,
-                                                                            text_mask,
-                                                                            object_vl_embeddings,
-                                                                            box_mask,
-                                                                            output_all_encoded_layers=False,
-                                                                            output_text_and_object_separately=True)
+        hidden_states, hc = self.vlbert(text_input_ids,
+                                        text_token_type_ids,
+                                        text_visual_embeddings,
+                                        text_mask,
+                                        object_vl_embeddings,
+                                        box_mask,
+                                        output_all_encoded_layers=False)
+
+        _batch_inds = torch.arange(question.shape[0], device=question.device)
+
+        hm = hidden_states[_batch_inds, ans_pos]
+        # hm = F.tanh(self.hm_out(hidden_states[_batch_inds, ans_pos]))
+        # hi = F.tanh(self.hi_out(hidden_states[_batch_inds, ans_pos + 2]))
 
         ###########################################
-
-        # classifier
-        logits = self.final_mlp(pooled_rep)
         outputs = {}
+        # print('hm: ', hm.shape)
+        # classifier
+        # logits = self.final_mlp(hc * hm * hi)
+        # logits = self.final_mlp(hc)
+        logits = self.final_mlp(hm)
+
         outputs.update({'label_logits': logits,
                         'label': answers.long()})
+        # print(answers.shape)
+
+        # print('loss: ', loss)
 
         return outputs
 
