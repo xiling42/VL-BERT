@@ -109,7 +109,7 @@ TRAIN:
   LR: 7.0e-6
   LR_SCHEDULE: 'triangle'
   WD: 0.0001
-  WARMUP: true
+  WARMUP: false
   WARMUP_METHOD: 'linear'
   WARMUP_FACTOR: 0.0
   WARMUP_STEPS: 1000
