@@ -61,7 +61,7 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
     if mode == 'val':
         
         dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, split = 'val', transform=transform)
-        print('val size:        0000000000000000000000     ', len(dataset_object)
+        print('val size:        0000000000000000000000     ', len(dataset_object))
         val_set = DataLoader(
             dataset_object, batch_size=batch_size, shuffle = False, num_workers=num_workers, collate_fn=collate_data
         )
