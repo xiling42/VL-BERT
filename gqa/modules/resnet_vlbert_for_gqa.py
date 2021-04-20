@@ -394,7 +394,7 @@ class ResNetVLBERT(Module):
         ###########################################
 
         # classifier
-        logits = self.final_mlp(pooled_rep).squeeze(2)
+        logits = self.final_mlp(pooled_rep)
         outputs = {}
         outputs.update({'label_logits': logits,
                         'label': answers.long()})
