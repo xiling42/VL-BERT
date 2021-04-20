@@ -30,9 +30,9 @@ class Accuracy(EvalMetric):
             if cls_logits.dim() == 1:
                 cls_logits = cls_logits.view((-1, 4))
                 label = label.view((-1, 4)).argmax(1)
-            if outputs['val']:
-                for p,t in zip(cls_logits.argmax(dim=1), label):
-                    print('p: {} and t: {}'.format(p, t))
+            #if outputs['val']:
+            #    for p,t in zip(cls_logits.argmax(dim=1), label):
+            #        print('p: {} and t: {}'.format(p, t))
             self.sum_metric += float((cls_logits.argmax(dim=1) == label).sum().item())
             self.num_inst += cls_logits.shape[0]
 
