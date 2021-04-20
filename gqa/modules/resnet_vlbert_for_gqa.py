@@ -312,12 +312,7 @@ class ResNetVLBERT(Module):
         # logits = self.final_mlp(hc * hm * hi)
         # logits = self.final_mlp(hc)
         logits = self.final_mlp(hm)
-        # logits = F.softmax(logits, 1)
-        # print('logits: ', logits)
-        # print('answers: ', answers)
-        # loss
-        # criterion = nn.CrossEntropyLoss()
-        # print('logits: ', logits)
+
         loss = F.cross_entropy(logits, answers.long())
         # loss = criterion(logits, answers)
         # print('logits: ', logits)
@@ -329,179 +324,13 @@ class ResNetVLBERT(Module):
         # print('loss: ', loss)
 
         return outputs, loss
-        #
-        # net.zero_grad()
-        # output = net(image, question, q_len)
-        # loss = criterion(output, answer)
-        # loss.backward()
-        # optimizer.step()
-        # correct = output.detach().argmax(1) == answer
-        # correct = torch.tensor(correct, dtype=torch.float32).sum() / batch_size
-
-
-        # max_len = int(box_mask.sum(1).max().item())
-        # objects = objects[:, :max_len]
-        # box_mask = box_mask[:, :max_len]
-        # boxes = boxes[:, :max_len]
-        # segms = segms[:, :max_len]
-        #
-        # if self.config.NETWORK.BLIND:
-        #     obj_reps = {'obj_reps': boxes.new_zeros((*boxes.shape[:-1], self.config.NETWORK.IMAGE_FINAL_DIM))}
-        # else:
-        #     obj_reps = self.image_feature_extractor(images=images,
-        #                                             boxes=boxes,
-        #                                             box_mask=box_mask,
-        #                                             im_info=im_info,
-        #                                             classes=objects,
-        #                                             segms=segms)
-        #
-        # num_choices = answer_choices.shape[1]
-        # question_ids = question[:, :, 0]
-        # question_tags = question[:, :, 1]
-        # question_tags = question_tags.repeat(1, num_choices).view(question_tags.shape[0], num_choices, -1)
-        # question_mask = (question[:, :, 0] > 0.5)
-        # answer_ids = answer_choices[:, :, :,0]
-        # answer_tags = answer_choices[:, :, :, 1]
-        # answer_mask = (answer_choices[:, :, :, 0] > 0.5)
-        #
-        # ############################################
-        #
-        # # prepare text
-        # if self.config.NETWORK.ANSWER_FIRST:
-        #     if self.config.NETWORK.QA_ONE_SENT:
-        #         raise NotImplemented
-        #     else:
-        #         text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_aq(
-        #             question_ids,
-        #             question_tags,
-        #             question_mask,
-        #             answer_ids,
-        #             answer_tags,
-        #             answer_mask)
-        # else:
-        #     if self.config.NETWORK.QA_ONE_SENT:
-        #         text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_qa_onesent(
-        #             question_ids,
-        #             question_tags,
-        #             question_mask,
-        #             answer_ids,
-        #             answer_tags,
-        #             answer_mask)
-        #     else:
-        #         text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_qa(
-        #             question_ids,
-        #             question_tags,
-        #             question_mask,
-        #             answer_ids,
-        #             answer_tags,
-        #             answer_mask)
-        #
-        # if self.config.NETWORK.NO_GROUNDING:
-        #     text_tags.zero_()
-        # text_visual_embeddings = self._collect_obj_reps(text_tags, obj_reps['obj_reps'])
-        # if self.config.NETWORK.BLIND:
-        #     object_linguistic_embeddings = boxes.new_zeros((*boxes.shape[:-1], self.config.NETWORK.VLBERT.hidden_size))
-        #     object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(1).repeat(1, num_choices, 1, 1)
-        # else:
-        #     if self.config.NETWORK.VLBERT.object_word_embed_mode in [1, 2]:
-        #         object_linguistic_embeddings = self.object_linguistic_embeddings(
-        #             objects.long().clamp(min=0, max=self.object_linguistic_embeddings.weight.data.shape[0] - 1)
-        #         )
-        #         object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(1).repeat(1, num_choices, 1, 1)
-        #     elif self.config.NETWORK.VLBERT.object_word_embed_mode == 3:
-        #         cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
-        #         global_context_mask = text_mask & (text_input_ids != cls_id) & (text_input_ids != sep_id)
-        #         word_embedding = self.vlbert._module.word_embeddings(text_input_ids)
-        #         word_embedding[global_context_mask == 0] = 0
-        #         object_linguistic_embeddings = word_embedding.sum(dim=2) / global_context_mask.sum(dim=2, keepdim=True).to(dtype=word_embedding.dtype)
-        #         object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(2).repeat((1, 1, max_len, 1))
-        # object_vl_embeddings = torch.cat((obj_reps['obj_reps'].unsqueeze(1).repeat(1, num_choices, 1, 1),
-        #                                   object_linguistic_embeddings), -1)
-        #
-        # ###########################################
-        #
-        # # Visual Linguistic BERT
-        #
-        # if self.config.NETWORK.NO_OBJ_ATTENTION or self.config.NETWORK.BLIND:
-        #     box_mask.zero_()
-        #
-        # hidden_states_text, hidden_states_objects, pooled_rep = self.vlbert(text_input_ids,
-        #                                                                   text_token_type_ids,
-        #                                                                   text_visual_embeddings,
-        #                                                                   text_mask,
-        #                                                                   object_vl_embeddings,
-        #                                                                   box_mask.unsqueeze(1).repeat(1, num_choices, 1),
-        #                                                                   output_all_encoded_layers=False,
-        #                                                                   output_text_and_object_separately=True)
-        #
-        # ###########################################
-        # outputs = {}
-        #
-        # # classifier
-        # logits = self.final_mlp(pooled_rep).squeeze(2)
-        #
-        # # loss
-        # if self.config.NETWORK.CLASSIFIER_SIGMOID:
-        #     _, choice_ind = torch.meshgrid(torch.arange(logits.shape[0], device=logits.device),
-        #                                    torch.arange(num_choices, device=logits.device))
-        #     label_binary = (choice_ind == answer_label.unsqueeze(1))
-        #     if mask_type is not None and self.config.NETWORK.REPLACE_OBJECT_CHANGE_LABEL:
-        #         label_binary = label_binary * (mask_type != 1).unsqueeze(1)
-        #     weight = logits.new_zeros(logits.shape).fill_(1.0)
-        #     weight[label_binary == 1] = self.config.NETWORK.CLASSIFIER_SIGMOID_LOSS_POSITIVE_WEIGHT
-        #     rescale = (self.config.NETWORK.CLASSIFIER_SIGMOID_LOSS_POSITIVE_WEIGHT + 1.0) \
-        #         / (2.0 * self.config.NETWORK.CLASSIFIER_SIGMOID_LOSS_POSITIVE_WEIGHT)
-        #     ans_loss = rescale * F.binary_cross_entropy_with_logits(logits, label_binary.to(dtype=logits.dtype),
-        #                                                             weight=weight)
-        #     outputs['positive_fraction'] = label_binary.to(dtype=logits.dtype).sum() / label_binary.numel()
-        # else:
-        #     ans_loss = F.cross_entropy(logits, answer_label.long().view(-1))
-        #
-        # outputs.update({'label_logits': logits,
-        #                 'label': answer_label.long().view(-1),
-        #                 'ans_loss': ans_loss})
-        #
-        # loss = ans_loss.mean() * self.config.NETWORK.ANS_LOSS_WEIGHT
-        #
-        # if mask_position is not None:
-        #     assert False, "Todo: align to original position."
-        #     _batch_ind = torch.arange(images.shape[0], dtype=torch.long, device=images.device)
-        #     mask_pos_rep = hidden_states[_batch_ind, answer_label, mask_position]
-        #     mask_pred_logits = (obj_reps['obj_reps'] @ mask_pos_rep.unsqueeze(-1)).squeeze(-1)
-        #     mask_pred_logits[1 - box_mask] -= 10000.0
-        #     mask_object_loss = F.cross_entropy(mask_pred_logits, mask_label, ignore_index=-1)
-        #     logits_padded = mask_pred_logits.new_zeros((mask_pred_logits.shape[0], origin_len)).fill_(-10000.0)
-        #     logits_padded[:, :mask_pred_logits.shape[1]] = mask_pred_logits
-        #     mask_pred_logits = logits_padded
-        #     outputs.update({
-        #         'mask_object_loss': mask_object_loss,
-        #         'mask_object_logits': mask_pred_logits,
-        #         'mask_object_label': mask_label})
-        #     loss = loss + mask_object_loss.mean() * self.config.NETWORK.MASK_OBJECT_LOSS_WEIGHT
-        #
-        # if self.enable_cnn_reg_loss:
-        #     if not self.cnn_loss_top:
-        #         loss = loss + obj_reps['cnn_regularization_loss'].mean() * self.config.NETWORK.CNN_LOSS_WEIGHT
-        #         outputs['cnn_regularization_loss'] = obj_reps['cnn_regularization_loss']
-        #     else:
-        #         objects = objects.unsqueeze(1).repeat(1, num_choices, 1)
-        #         box_mask = box_mask.unsqueeze(1).repeat(1, num_choices, 1)
-        #         cnn_reg_logits = self.cnn_loss_reg(hidden_states_objects[box_mask])
-        #         cnn_reg_loss = F.cross_entropy(cnn_reg_logits, objects[box_mask].long())
-        #         loss = loss + cnn_reg_loss.mean() * self.config.NETWORK.CNN_LOSS_WEIGHT
-        #         outputs['cnn_regularization_loss'] = cnn_reg_loss
-        #
-        # return outputs, loss
 
     def inference_forward(self,
-                          image,
-                          boxes,
-                          masks,
-                          question,
-                          question_align_matrix,
-                          answer_choices,
-                          answer_align_matrix,
-                          *args):
+                      image,
+                      question,
+                      length_question,
+                      answers,
+                      *args):
 
         if self.for_pretrain:
             answer_label, im_info, mask_position, mask_type = args
@@ -511,112 +340,57 @@ class ResNetVLBERT(Module):
 
         ###########################################
 
-        # visual feature extraction
-        images = image
-        objects = boxes[:, :, -1]
-        segms = masks
-        boxes = boxes[:, :, :4]
-        box_mask = (boxes[:, :, -1] > - 0.5)
-        max_len = int(box_mask.sum(1).max().item())
-        objects = objects[:, :max_len]
+        image = self.image_feature_fc(image)
+        # print('dim: ', self.dim)
+        # image = image.view(image.shape[0], self.dim, -1)
+        # print('question: ', question.shape)
+        # print('answer: ', answers)
+        # print('box_mask: ', image.shape, image[:, :, 0])
+        box_mask = (image[:, :, 0] > - 1.5)
+        max_len = max(length_question)
         box_mask = box_mask[:, :max_len]
-        boxes = boxes[:, :max_len]
-        segms = segms[:, :max_len]
+        image = image[:, :max_len]
 
-        if self.config.NETWORK.BLIND:
-            obj_reps = {'obj_reps': boxes.new_zeros((*boxes.shape[:-1], self.config.NETWORK.IMAGE_FINAL_DIM))}
-        else:
-            obj_reps = self.image_feature_extractor(images=images,
-                                                    boxes=boxes,
-                                                    box_mask=box_mask,
-                                                    im_info=im_info,
-                                                    classes=objects,
-                                                    segms=segms)
+        # visual feature extraction
+        # print('in resent_vlbert_for_gqa forward')
+        question_ids = question
+        question_tags = question.new_zeros(question_ids.shape)
+        # print('qs: ', question)
+        question_mask = (question > 0.5)
 
-        num_choices = answer_choices.shape[1]
-        question_ids = question[:, :, 0]
-        question_tags = question[:, :, 1]
-        question_tags = question_tags.repeat(1, num_choices).view(question_tags.shape[0], num_choices, -1)
-        question_mask = (question[:, :, 0] > 0.5)
-        answer_ids = answer_choices[:, :, :, 0]
-        answer_tags = answer_choices[:, :, :, 1]
-        answer_mask = (answer_choices[:, :, :, 0] > 0.5)
+        # answer_ids = answers
+        # answer_tags = (question > 0.5)
+        # answer_mask = answers.new_ones(answer_ids.shape)
+
+        answer_ids = answers
+        answer_mask = question_mask.new_zeros(answer_ids.shape).fill_(1)
+        answer_tags = question_tags.new_zeros(answer_ids.shape)
 
         ############################################
 
         # prepare text
-        if self.config.NETWORK.ANSWER_FIRST:
-            if self.config.NETWORK.QA_ONE_SENT:
-                raise NotImplemented
-            else:
-                text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_aq(
-                    question_ids,
-                    question_tags,
-                    question_mask,
-                    answer_ids,
-                    answer_tags,
-                    answer_mask)
-        else:
-            if self.config.NETWORK.QA_ONE_SENT:
-                text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_qa_onesent(
-                    question_ids,
-                    question_tags,
-                    question_mask,
-                    answer_ids,
-                    answer_tags,
-                    answer_mask)
-            else:
-                text_input_ids, text_token_type_ids, text_tags, text_mask = self.prepare_text_from_qa(
-                    question_ids,
-                    question_tags,
-                    question_mask,
-                    answer_ids,
-                    answer_tags,
-                    answer_mask)
+        text_input_ids, text_token_type_ids, text_tags, text_mask, ans_pos = self.prepare_text_from_qa(question_ids,
+                                                                                                       question_tags,
+                                                                                                       question_mask,
+                                                                                                       answer_ids,
+                                                                                                       answer_tags,
+                                                                                                       answer_mask)
 
-        if self.config.NETWORK.NO_GROUNDING:
-            text_tags.zero_()
-        text_visual_embeddings = self._collect_obj_reps(text_tags, obj_reps['obj_reps'])
-        if self.config.NETWORK.BLIND:
-            object_linguistic_embeddings = boxes.new_zeros(
-                (*boxes.shape[:-1], self.config.NETWORK.VLBERT.hidden_size))
-            object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(1).repeat(1, num_choices, 1, 1)
-        else:
-            if self.config.NETWORK.VLBERT.object_word_embed_mode in [1, 2]:
-                object_linguistic_embeddings = self.object_linguistic_embeddings(
-                    objects.long().clamp(min=0, max=self.object_linguistic_embeddings.weight.data.shape[0] - 1)
-                )
-                object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(1).repeat(1, num_choices, 1,
-                                                                                                1)
-            elif self.config.NETWORK.VLBERT.object_word_embed_mode == 3:
-                cls_id, sep_id = self.tokenizer.convert_tokens_to_ids(['[CLS]', '[SEP]'])
-                global_context_mask = text_mask & (text_input_ids != cls_id) & (text_input_ids != sep_id)
-                word_embedding = self.vlbert._module.word_embeddings(text_input_ids)
-                word_embedding[global_context_mask == 0] = 0
-                object_linguistic_embeddings = word_embedding.sum(dim=2) / global_context_mask.sum(dim=2,
-                                                                                                   keepdim=True).to(
-                    dtype=word_embedding.dtype)
-                object_linguistic_embeddings = object_linguistic_embeddings.unsqueeze(2).repeat((1, 1, max_len, 1))
-        object_vl_embeddings = torch.cat((obj_reps['obj_reps'].unsqueeze(1).repeat(1, num_choices, 1, 1),
-                                          object_linguistic_embeddings), -1)
+        text_visual_embeddings = self._collect_obj_reps(text_tags, image)
 
-        ###########################################
-
-        # Visual Linguistic BERT
-
-        if self.config.NETWORK.NO_OBJ_ATTENTION or self.config.NETWORK.BLIND:
-            box_mask.zero_()
+        object_linguistic_embeddings = self.object_linguistic_embeddings(
+            image.new_zeros((image.shape[0], image.shape[1])).long()
+        )
+        object_vl_embeddings = torch.cat((image, object_linguistic_embeddings), -1)
 
         hidden_states_text, hidden_states_objects, pooled_rep = self.vlbert(text_input_ids,
-                                                                          text_token_type_ids,
-                                                                          text_visual_embeddings,
-                                                                          text_mask,
-                                                                          object_vl_embeddings,
-                                                                          box_mask.unsqueeze(1).repeat(1,
-                                                                                                       num_choices,
-                                                                                                       1),
-                                                                          output_all_encoded_layers=False,
-                                                                          output_text_and_object_separately=True)
+                                                                            text_token_type_ids,
+                                                                            text_visual_embeddings,
+                                                                            text_mask,
+                                                                            object_vl_embeddings,
+                                                                            box_mask,
+                                                                            output_all_encoded_layers=False,
+                                                                            output_text_and_object_separately=True)
 
         ###########################################
 
@@ -626,4 +400,5 @@ class ResNetVLBERT(Module):
         outputs = {'label_logits': logits}
 
         return outputs
+
 

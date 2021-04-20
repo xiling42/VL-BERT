@@ -21,8 +21,9 @@ def gqa_feature_loader(root):
     h = h5py.File(root+'/data/gqa_features.hdf5', 'r')
     print('kkkk: ', h.keys())
     img = h['features']
+    bbox = h['bbox']
     img_info = json.load(open(root + '/data/gqa_objects_merged_info.json', 'r'))
-    return img, img_info
+    return img, bbox, img_info
 
 class GQADataset(Dataset):
     def __init__(self, root, split='train', transform=None):
@@ -36,7 +37,7 @@ class GQADataset(Dataset):
 
         self.root = root
         self.split = split
-        self.img, self.img_info = gqa_feature_loader(self.root)
+        self.img, self.bbox, self.img_info = gqa_feature_loader(self.root)
 
     def __getitem__(self, index):
         imgfile, question, answer = self.data[index]
