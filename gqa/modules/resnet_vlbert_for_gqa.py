@@ -259,7 +259,7 @@ class ResNetVLBERT(Module):
         # print('in resent_vlbert_for_gqa forward')
         question_ids = question
         question_tags = question.new_zeros(question_ids.shape)
-        print('qs: ', question)
+        #print('qs: ', question)
         question_mask = (question > 0.5)
 
         # answer_ids = answers
