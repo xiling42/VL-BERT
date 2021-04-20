@@ -52,7 +52,7 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
         dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, transform=transform)
     
         train_set = DataLoader(
-            dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
+            dataset_object, batch_size=batch_size, shuffle = True, num_workers=num_workers, collate_fn=collate_data
         )
     
         
@@ -63,7 +63,7 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
         dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, split = 'val', transform=transform)
     
         val_set = DataLoader(
-            dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
+            dataset_object, batch_size=batch_size, shuffle = False, num_workers=num_workers, collate_fn=collate_data
         )
     
         # dataset = iter(train_set)
