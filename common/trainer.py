@@ -74,10 +74,7 @@ def train(net,
     assert isinstance(gradient_accumulate_steps, int) and gradient_accumulate_steps >= 1
 
     for epoch in range(begin_epoch, end_epoch):
-        if validation_monitor is not None:
-            validation_monitor(epoch, net, optimizer, writer)
-        if epoch_end_callbacks is not None:
-            _multiple_callbacks(epoch_end_callbacks, epoch, net, optimizer, writer, validation_monitor=validation_monitor)
+        
         print('PROGRESS: %.2f%%' % (100.0 * epoch / end_epoch))
 
         # set epoch as random seed of sampler while distributed training
