@@ -21,7 +21,7 @@ def gqa_feature_loader(root):
     h = h5py.File(root+'/data/gqa_features.hdf5', 'r')
     print('kkkk: ', h.keys())
     img = h['features']
-    bbox = h['bbox']
+    bbox = h['bboxes']
     img_info = json.load(open(root + '/data/gqa_objects_merged_info.json', 'r'))
     return img, bbox, img_info
 
