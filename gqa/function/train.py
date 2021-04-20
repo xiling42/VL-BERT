@@ -171,7 +171,7 @@ def train_net(args, config):
         if config.TRAIN.GRAD_ACCUMULATE_STEPS > 1:
             batch_size = batch_size * config.TRAIN.GRAD_ACCUMULATE_STEPS
         base_lr = config.TRAIN.LR * batch_size
-        print('base_lr')
+        print('base_lr-------------------------------------------', base_lr)
         optimizer_grouped_parameters = [{'params': [p for n, p in model.named_parameters() if _k in n],
                                          'lr': base_lr * _lr_mult}
                                         for _k, _lr_mult in config.TRAIN.LR_MULT]
