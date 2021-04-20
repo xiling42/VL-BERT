@@ -329,14 +329,13 @@ class ResNetVLBERT(Module):
                       image,
                       question,
                       length_question,
-                      answers,
-                      *args):
+                      answers):
 
-        if self.for_pretrain:
-            answer_label, im_info, mask_position, mask_type = args
-        else:
-            assert len(args) == 1
-            im_info = args[0]
+        # if self.for_pretrain:
+        #     answer_label, im_info, mask_position, mask_type = args
+        # else:
+        #     assert len(args) == 1
+        #     im_info = args[0]
 
         ###########################################
 
