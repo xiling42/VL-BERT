@@ -11,12 +11,12 @@ def do_validation(net, val_loader, metrics, label_index_in_batch):
         batch = to_cuda(batch)
      
         #label = batch[label_index_in_batch]
-        outputs = net(*batch)
+        #outputs = net(*batch)
         #datas = [batch[i] for i in range(len(batch)) if i != label_index_in_batch % len(batch)]
 
         #outputs = net(*datas)
         #outputs.update({'label': label})
-        metrics.update(outputs)
+        #Smetrics.update(outputs)
 
 
 @torch.no_grad()
