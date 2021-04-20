@@ -26,7 +26,7 @@ class Accuracy(EvalMetric):
             _filter = outputs['label'] != -1
             cls_logits = outputs['label_logits'][_filter]
             label = outputs['label'][_filter]
-            print('cls dim', cls_logits.dim())
+            # print('cls dim', cls_logits.dim())
             if cls_logits.dim() == 1:
                 cls_logits = cls_logits.view((-1, 4))
                 label = label.view((-1, 4)).argmax(1)

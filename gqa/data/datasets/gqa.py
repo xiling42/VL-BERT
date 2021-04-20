@@ -41,7 +41,7 @@ class GQADataset(Dataset):
 
     def __getitem__(self, index):
         imgfile, question, answer = self.data[index]
-        print('qt: {}, at: {}'.format(question, answer))
+        # print('qt: {}, at: {}'.format(question, answer))
         idx = int(self.img_info[imgfile]['index'])
         # print('--------------------------------------------------------------------------')
         # print(self.img_info[imgfile].keys())
