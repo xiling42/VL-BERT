@@ -48,12 +48,22 @@ def make_dataloader(cfg,  dataset=None, mode='train', distributed=False, num_rep
     batch_size = cfg.TRAIN.BATCH_IMAGES * num_gpu
     shuffle = cfg.TRAIN.SHUFFLE
     num_workers = cfg.NUM_WORKERS_PER_GPU * num_gpu
-
-    dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, transform=transform)
-
-    train_set = DataLoader(
-        dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
-    )
-
-    # dataset = iter(train_set)
-    return train_set
+    if mode == 'train':
+        dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, transform=transform)
+    
+        train_set = DataLoader(
+            dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
+        )
+    
+        
+        # dataset = iter(train_set)
+        return train_set
+    if mode == 'val':
+        dataset_object = GQADataset(cfg.DATASET.DATASET_PATH, split = 'val', transform=transform)
+    
+        val_set = DataLoader(
+            dataset_object, batch_size=batch_size, num_workers=num_workers, collate_fn=collate_data
+        )
+    
+        # dataset = iter(train_set)
+        return val_set
