@@ -318,7 +318,8 @@ class ResNetVLBERT(Module):
         # print('logits: ', logits)
         outputs.update({'label_logits': logits,
                         'label': answers.long(),
-                        'ans_loss': loss})
+                        'ans_loss': loss,
+                        'val': False})
         # print(answers.shape)
 
         # print('loss: ', loss)
@@ -405,7 +406,8 @@ class ResNetVLBERT(Module):
         logits = self.final_mlp(hm)
 
         outputs.update({'label_logits': logits,
-                        'label': answers.long()})
+                        'label': answers.long(),
+                        'val': True})
         # print(answers.shape)
 
         # print('loss: ', loss)
