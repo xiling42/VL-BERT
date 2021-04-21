@@ -16,7 +16,7 @@ def do_validation(net, val_loader, metrics, label_index_in_batch):
 
         #outputs = net(*datas)
         #outputs.update({'label': label})
-        Smetrics.update(outputs)
+        metrics.update(outputs)
 
 
 @torch.no_grad()
