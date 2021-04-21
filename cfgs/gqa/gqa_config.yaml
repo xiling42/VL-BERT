@@ -34,7 +34,7 @@ DATASET:
   MASK_SIZE: 14
 
 NETWORK:
-  PARTIAL_PRETRAIN: "./model/pretrained_model/vl-bert-base-e2e.model"
+  PARTIAL_PRETRAIN: "./model/pretrained_model/vl-bert-base-prec.model"
   PARTIAL_PRETRAIN_PREFIX_CHANGES:
   - "vlbert.mvrc_head.transform->cnn_loss_reg.0"
   - "module.vlbert.mvrc_head.transform->module.cnn_loss_reg.0"
